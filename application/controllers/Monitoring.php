@@ -15,7 +15,7 @@ class Monitoring extends CI_Controller
     public function index()
     {
         $this->load->view('header/header');
-        $this->load->view('v_monitoring');
+        $this->load->view('v_detail');
         $this->load->view('header/footer');
     }
 

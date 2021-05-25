@@ -6,7 +6,7 @@ date_default_timezone_set("Asia/Jakarta");
 require APPPATH . '/libraries/REST_Controller.php';
 //use Restserver\Libraries\REST_Controller;
 
-class line_t extends REST_Controller
+class data_tps extends REST_Controller
 {
     /*----------------------------------------CONSTRUCTOR----------------------------------------*/
     function __construct($config = 'rest')
@@ -21,8 +21,8 @@ class line_t extends REST_Controller
         $id = $this->get('id');
         $limit = $this->get('limit');
         $order = $this->get('order');
-        $customer = $this->get('customer');
-        $lokasi = $this->get('lokasi');
+        $nomor_tps = $this->get('nomor_tps');
+        
 
         if ($limit != '') {
             $this->db->limit($limit);
@@ -30,37 +30,32 @@ class line_t extends REST_Controller
         if ($order != '') {
             $this->db->order_by('id', $order);
         }
-        if ($customer != '') {
-            $this->db->where('customer', $customer);
+        if ($nomor_tps != '') {
+            $this->db->where('nomor_tps', $nomor_tps);
         }
-        if ($lokasi != '') {
-            $this->db->where('lokasi', $lokasi);
-        }
+  
 
         if ($id == '') {
-            $line_t = $this->db->get('line_t')->result();
+            $monitoring = $this->db->get('monitoring')->result();
         } else {
             $this->db->where('id', $id);
-            $line_t = $this->db->get('line_t')->result();
+            $monitoring = $this->db->get('monitoring')->result();
         }
 
-        $this->response($line_t, 200);
+        $this->response($monitoring, 200);
     }
 
     function index_post()
     {
         $data = array(
+            'nomor_tps' => $this->post('nomor_tps'),
             'lokasi'    =>   $this->post('lokasi'),
-            'customer' => $this->post('customer'),
-            'tegangan' => $this->post('tegangan'),
-            'arus' => $this->post('arus'),
-            'daya' => $this->post('daya'),
-            'frekuensi' => $this->post('frekuensi'),
-            'kwh' => $this->post('kwh'),
+            'status' => $this->post('status'),
+            'value' => $this->post('value'),
+            'jam' => date("h:i:sa"),
             'tanggal' => date("Y-m-d"),
-            'waktu' => date("h:i:sa"),
         );
-        $insert = $this->db->insert('line_t', $data);
+        $insert = $this->db->insert('monitoring', $data);
         if ($insert) {
             $this->response($data, 200);
         } else {
@@ -71,17 +66,35 @@ class line_t extends REST_Controller
     function index_put()
     {
         $id = $this->put('id');
-        $data = array(
-            'tegangan' => $this->post('tegangan'),
-            'arus' => $this->post('arus'),
-            'daya' => $this->post('daya'),
-            'frekuensi' => $this->post('frekuensi'),
-            'tanggal' => date("Y-m-d"),
-            'waktu' => date("h:i:sa"),
-        );
+        $nomor_tps = $this->put('nomor_tps');
+        $lokasi = $this->put('lokasi');
+        $status = $this->put('status');
+        $value = $this->put('value');
+
+        if ($suhu != null){
+            $data['suhu'] = $suhu;
+        }
+        if ($arus != null){
+            $data['arus'] = $arus;
+        }
+        if ($tegangan != null){
+            $data['tegangan'] = $tegangan;
+        }
+        if ($daya != null){
+            $data['daya'] = $daya;
+        }
+        // $data = array(
+        //     'suhu' => $this->post('suhu'),
+        //     'arus' => $this->post('arus'),
+        //     'tegangan' => $this->post('tegangan'),
+        //     'daya' => $this->post('daya'),
+        //     'frekuensi' => $this->post('frekuensi'),
+        //     'tanggal' => date("Y-m-d"),
+        //     'waktu' => date("h:i:sa"),
+        // );
 
         $this->db->where('id', $id);
-        $update = $this->db->update('line_t', $data);
+        $update = $this->db->update('monitoring', $data);
 
         if ($update) {
             $this->response($data, 200);
@@ -97,7 +110,7 @@ class line_t extends REST_Controller
 
         
         if ($auth == "batman") {
-            $delete = $this->db->empty_table('line_t');
+            $delete = $this->db->empty_table('monitoring');
         }else{
             $this->db->where('id', $id);
             $delete = $this->db->delete('arus_pompa_1');

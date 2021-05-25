@@ -1,7 +1,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <b>Smart Power Meter</b></a>
+            <b>Smart Trash Control</b></a>
         </div>
         <!-- /.login-logo -->
         <div class="card">
